@@ -37,12 +37,12 @@ public class MainEntityViewHolder extends RecyclerView.ViewHolder implements Vie
         aRecyclerViewListener.onClick(v, getAdapterPosition());
     }
 
-    public void bind(MainEntity aMainEntity, Context context) {
+    public void bind(MainEntity.Objects aMainEntity, Context context) {
 
-        tripPackageTitleTextView.setText(aMainEntity.getTitle());
+        tripPackageTitleTextView.setText(aMainEntity.getName());
         final StateListDrawable placeholderList = (StateListDrawable) context.getResources().getDrawable(R.drawable.ic_placeholder_map_selector);
         Picasso.get()
-                .load(aMainEntity.getImage_url())
+                .load(aMainEntity.getIm())
                 .placeholder(placeholderList)
                 .into(tripPackageImageView);
 

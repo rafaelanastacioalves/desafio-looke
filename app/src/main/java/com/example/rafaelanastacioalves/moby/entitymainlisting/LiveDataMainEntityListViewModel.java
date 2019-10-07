@@ -13,14 +13,14 @@ import java.util.List;
 public class LiveDataMainEntityListViewModel extends ViewModel {
 
     private MainEntityListInteractor mMainEntityListinInteractor;
-    private LiveData<Resource<List<MainEntity>>> mMainEntityList;
+    private LiveData<Resource<MainEntity>> mMainEntityList;
 
 
     public LiveDataMainEntityListViewModel(MainEntityListInteractor interactor){
         this.mMainEntityListinInteractor = interactor;
     }
 
-    public LiveData<Resource<List<MainEntity>>> getMainEntityList() {
+    public LiveData<Resource<MainEntity>> getMainEntityList() {
         mMainEntityList = mMainEntityListinInteractor.execute(null);
         return mMainEntityList;
     }

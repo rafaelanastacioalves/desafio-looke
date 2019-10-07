@@ -21,8 +21,8 @@ public class MainEntityListInteractor implements Interactor<MainEntityListIntera
         this.appRepository = appRepository;
     }
     @Override
-    public LiveData<Resource<List<MainEntity>>> execute(RequestValues requestValues) {
-        MutableLiveData<Resource<List<MainEntity>>> repositoryLiveData = (MutableLiveData<Resource<List<MainEntity>>>) appRepository.getMainEntityList();
+    public LiveData<Resource<MainEntity>> execute(RequestValues requestValues) {
+        MutableLiveData<Resource<MainEntity>> repositoryLiveData = (MutableLiveData<Resource<MainEntity>>) appRepository.getMainEntityList();
         // aqui podemos aplicar transformações baseadas em regras de negócio usando
         // Transformations. Ex.: Transformations.map()
         Transformations.map(repositoryLiveData, resource -> {

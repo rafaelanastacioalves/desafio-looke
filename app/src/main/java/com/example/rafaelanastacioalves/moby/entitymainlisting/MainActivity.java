@@ -53,12 +53,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
     private void subscribe() {
         mLiveDataMainEntityListViewModel = ViewModelProviders.of(this, projectViewModelFactory).get(LiveDataMainEntityListViewModel.class);
-        mLiveDataMainEntityListViewModel.getMainEntityList().observe(this, new Observer<Resource<List<MainEntity>>>() {
+        mLiveDataMainEntityListViewModel.getMainEntityList().observe(this, new Observer<Resource<MainEntity>>() {
             @Override
-            public void onChanged(@Nullable Resource<List<MainEntity>> listResource) {
+            public void onChanged(@Nullable Resource<MainEntity> mainEntityResource) {
                 Timber.d("On Changed");
-                if (listResource != null) {
-                    switch (listResource.status) {
+                if (mainEntityResource != null) {
+                    switch (mainEntityResource.status) {
                         case INTERNAL_SERVER_ERROR:
                             hideLoading();
                             showErrorView();
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                         case SUCCESS:
                             Timber.d("Success");
                             hideLoading();
-                            populateRecyclerView(listResource.data);
+                            populateRecyclerView(mainEntityResource.data.getObjects());
                             break;
 
                     }
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     }
 
 
-    private void populateRecyclerView(List<MainEntity> data) {
+    private void populateRecyclerView(List<MainEntity.Objects> data) {
         if (data == null) {
             mTripPackageListAdapter.setItems(null);
             //TODO add any error managing
@@ -130,19 +130,18 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
     }
 
 
-    @Override
     public void onClick(View view, int position) {
-        MainEntity MainEntity = (MainEntity) mTripPackageListAdapter.getItems().get(position);
+        MainEntity.Objects objects = (com.example.rafaelanastacioalves.moby.domain.entities.MainEntity.Objects) mTripPackageListAdapter.getItems().get(position);
 
         AppCompatImageView transitionImageView = view.findViewById(R.id.main_entity_imageview);
-        startActivityByVersion(MainEntity, transitionImageView);
+        startActivityByVersion(objects, transitionImageView);
 
 
     }
 
-    private void startActivityByVersion(MainEntity mainEntity, AppCompatImageView transitionImageView) {
+    private void startActivityByVersion(MainEntity.Objects objects, AppCompatImageView transitionImageView) {
         Intent i = new Intent(this, EntityDetailActivity.class);
-        i.putExtra(EntityDetailsFragment.ARG_PACKAGE_ID, mainEntity.getId());
+        i.putExtra(EntityDetailsFragment.ARG_PACKAGE_ID, objects);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bundle bundle = null;

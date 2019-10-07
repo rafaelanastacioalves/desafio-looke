@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MainEntityAdapter extends RecyclerView.Adapter<MainEntityViewHolder> {
     private RecyclerViewClickListener recyclerViewClickListener;
-    private List<MainEntity> items = new ArrayList<>();
+    private List<MainEntity.Objects> items = new ArrayList<>();
 
     private Context mContext;
 
@@ -27,11 +27,11 @@ public class MainEntityAdapter extends RecyclerView.Adapter<MainEntityViewHolder
         this.recyclerViewClickListener = aRVC;
     }
 
-    public List<MainEntity> getItems() {
+    public List<MainEntity.Objects> getItems() {
         return this.items;
     }
 
-    public void setItems(List<MainEntity> items) {
+    public void setItems(List<MainEntity.Objects> items) {
         this.items = items;
         notifyDataSetChanged();
 
@@ -48,7 +48,7 @@ public class MainEntityAdapter extends RecyclerView.Adapter<MainEntityViewHolder
 
     @Override
     public void onBindViewHolder(MainEntityViewHolder holder, int position) {
-        MainEntity aRepoW = getItems().get(position);
+        MainEntity.Objects aRepoW = getItems().get(position);
         ((MainEntityViewHolder) holder).bind(aRepoW, mContext);
     }
 

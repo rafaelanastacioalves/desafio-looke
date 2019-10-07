@@ -1,27 +1,57 @@
 package com.example.rafaelanastacioalves.moby.domain.entities;
 
+import com.google.gson.annotations.SerializedName;
 
-public class MainEntity {
+import java.io.Serializable;
+import java.util.List;
 
-    private String id;
-    private String title;
-    private String price;
-    private String price_currency;
-    private String image_url;
+public class MainEntity implements Serializable {
 
-    public MainEntity(){
-        super();
+    @SerializedName("objects")
+    private final List<Objects> objects;
+
+    public MainEntity(List<Objects> objects) {
+        this.objects = objects;
     }
 
-    public String getId() {
-        return id;
+    public List<Objects> getObjects() {
+        return objects;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public class Objects implements Serializable {
+        @SerializedName("name")
+        private final String name;
 
-    public String getImage_url() {
-        return image_url;
+        @SerializedName("bg")
+        private final String bg;
+
+        @SerializedName("im")
+        private final String im;
+
+        @SerializedName("sg")
+        private final String sg;
+
+        public Objects(String name, String bg, String im, String sg) {
+            this.name = name;
+            this.bg = bg;
+            this.im = im;
+            this.sg = sg;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getBg() {
+            return bg;
+        }
+
+        public String getIm() {
+            return im;
+        }
+
+        public String getSg() {
+            return sg;
+        }
     }
 }
