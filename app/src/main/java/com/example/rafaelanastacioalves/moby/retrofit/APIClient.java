@@ -3,8 +3,8 @@ package com.example.rafaelanastacioalves.moby.retrofit;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
 
-import java.util.List;
-
+import io.reactivex.Observable;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -16,7 +16,9 @@ public interface APIClient {
     @GET("/v0/b/desafio-dev-android.appspot.com/o/assets.json")
     Call<MainEntity> getTripPackageList(@Query("alt")String alt, @Query("token")String token);
 
-    @POST("/trip-packages/{tripPackageID}")
-    Call<EntityDetails> getTripPackageDetails(@Path("tripPackageID") String id);
+    @GET("{soundUrl}")
+    Call<EntityDetails> getSound(@Path("soundUrl") String soundUrl);
 
+    @GET("{mediaUrl}")
+    Observable<ResponseBody> getMedia(@Path("mediaUrl") String url);
 }

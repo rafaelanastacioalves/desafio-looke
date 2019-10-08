@@ -27,7 +27,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.containsString;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -58,7 +57,7 @@ public class MainEntityDetailActivityTest {
         );
 
         Intent intent = new Intent();
-        intent.putExtra(EntityDetailsFragment.ARG_PACKAGE_ID, MOCK_PACKAGE_ID);
+        intent.putExtra(EntityDetailsFragment.ARG_OBJECTS, MOCK_PACKAGE_ID);
         tripPackageDetailActivityTestRule.launchActivity(intent);
 
 

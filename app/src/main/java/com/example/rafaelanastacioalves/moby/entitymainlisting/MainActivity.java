@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
     private void startActivityByVersion(MainEntity.Objects objects, AppCompatImageView transitionImageView) {
         Intent i = new Intent(this, EntityDetailActivity.class);
-        i.putExtra(EntityDetailsFragment.ARG_PACKAGE_ID, objects);
+        i.putExtra(EntityDetailsFragment.ARG_OBJECTS, objects);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bundle bundle = null;

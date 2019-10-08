@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.example.rafaelanastacioalves.moby.R;
 import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
+import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
+import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -26,9 +28,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import dagger.android.AndroidInjection;
 import dagger.android.support.AndroidSupportInjection;
-import dagger.android.support.AndroidSupportInjectionModule;
 import dagger.android.support.DaggerFragment;
 
 /**
@@ -36,7 +36,7 @@ import dagger.android.support.DaggerFragment;
  */
 public class EntityDetailsFragment extends DaggerFragment implements View.OnClickListener {
 
-    public static String ARG_PACKAGE_ID;
+    public static String ARG_OBJECTS;
 
     private LiveDataEntityDetailsViewModel mLiveDataEntityDetailsViewModel;
 
@@ -48,6 +48,8 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
 
     @BindView(R.id.trip_package_detail_imageview)
     ImageView tripPackageDetailImageview;
+
+    private MainEntity.Objects objects;
 
     @Override
     public void onAttach(Context context) {
@@ -66,12 +68,11 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     }
 
     private void subscribe() {
-        String mPackageId = getArguments().getString(ARG_PACKAGE_ID);
+        objects = (MainEntity.Objects) getArguments().getSerializable(ARG_OBJECTS);
         mLiveDataEntityDetailsViewModel = ViewModelProviders.of(this, entityDetailViewModelFactory).get(LiveDataEntityDetailsViewModel.class);
-        mLiveDataEntityDetailsViewModel.getEntityDetails(mPackageId).observe(this, new Observer<Resource<EntityDetails>>() {
+        mLiveDataEntityDetailsViewModel.getEntityDetails(objects).observe(this, new Observer<Resource<MediaReference>>() {
             @Override
-            public void onChanged(@Nullable Resource<EntityDetails> entityDetails) {
-                setViewsWith(entityDetails.data);
+            public void onChanged(@Nullable Resource<MediaReference> entityDetails) {
             }
         });
     }
