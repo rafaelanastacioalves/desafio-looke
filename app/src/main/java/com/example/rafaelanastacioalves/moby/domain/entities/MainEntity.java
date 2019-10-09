@@ -2,6 +2,7 @@ package com.example.rafaelanastacioalves.moby.domain.entities;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 

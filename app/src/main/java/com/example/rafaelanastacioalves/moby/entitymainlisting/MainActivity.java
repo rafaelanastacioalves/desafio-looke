@@ -145,10 +145,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bundle bundle = null;
-            bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
-                    transitionImageView, transitionImageView.getTransitionName()).toBundle();
-            startActivity(i, bundle);
-
+//            bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
+//                    transitionImageView, transitionImageView.getTransitionName()).toBundle();
+//            startActivity(i, bundle);
+            startActivity(i);
         } else {
             startActivity(i);
         }

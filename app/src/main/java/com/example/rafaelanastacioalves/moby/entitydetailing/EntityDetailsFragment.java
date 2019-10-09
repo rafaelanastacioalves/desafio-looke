@@ -4,6 +4,7 @@ package com.example.rafaelanastacioalves.moby.entitydetailing;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,10 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.example.rafaelanastacioalves.moby.R;
+import com.example.rafaelanastacioalves.moby.common.MediaReferenceHelper;
 import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
@@ -49,7 +53,11 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     @BindView(R.id.trip_package_detail_imageview)
     ImageView tripPackageDetailImageview;
 
+    @BindView(R.id.detail_entity_video)
+    VideoView videoView;
+
     private MainEntity.Objects objects;
+    private MediaController mediaController;
 
     @Override
     public void onAttach(Context context) {
@@ -60,27 +68,56 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        recoverVariables();
         subscribe();
+        setupMediaController();
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View root = inflateViews(inflater, container);
+        return root;
+    }
+
+    private void setupMediaController() {
+        mediaController = new MediaController(getActivity());
     }
 
     private void settupadagger() {
         AndroidSupportInjection.inject(this);
     }
 
-    private void subscribe() {
+    private void recoverVariables() {
         objects = (MainEntity.Objects) getArguments().getSerializable(ARG_OBJECTS);
+
+    }
+
+    private void subscribe() {
         mLiveDataEntityDetailsViewModel = ViewModelProviders.of(this, entityDetailViewModelFactory).get(LiveDataEntityDetailsViewModel.class);
         mLiveDataEntityDetailsViewModel.getEntityDetails(objects).observe(this, new Observer<Resource<MediaReference>>() {
             @Override
             public void onChanged(@Nullable Resource<MediaReference> entityDetails) {
+                if (entityDetails != null && entityDetails.status == Resource.Status.SUCCESS){
+                    MediaReference mediaReference = entityDetails.data;
+                    playVideoFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getVideoFile(), getContext()));
+                }
             }
         });
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflateViews(inflater, container);
+    private void playVideoFromUrl(String bg) {
+        videoView.setMediaController(mediaController);
+        videoView.setVideoPath(bg);
+        videoView.start();
+    }
+
+    private void playVideoFromUri(Uri uriReferene) {
+        mediaController.setAnchorView(videoView);
+        videoView.setMediaController(mediaController);
+        videoView.setVideoURI(uriReferene);
+        videoView.start();
     }
 
     private View inflateViews(LayoutInflater inflater, ViewGroup container) {
@@ -117,9 +154,8 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    public void onStop() {
+        super.onStop();
     }
 
     @Override
