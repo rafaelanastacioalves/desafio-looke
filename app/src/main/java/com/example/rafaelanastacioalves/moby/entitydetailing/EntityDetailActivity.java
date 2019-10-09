@@ -22,10 +22,9 @@ public class EntityDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
-            Timber.i("PullRequestsFragment ARG PACKAGE: " + getIntent().getStringExtra(EntityDetailsFragment.ARG_OBJECTS));
             Bundle arguments = new Bundle();
-            arguments.putString(EntityDetailsFragment.ARG_OBJECTS,
-                    getIntent().getStringExtra(EntityDetailsFragment.ARG_OBJECTS));
+            arguments.putSerializable(EntityDetailsFragment.ARG_OBJECTS,
+                    getIntent().getSerializableExtra(EntityDetailsFragment.ARG_OBJECTS));
             EntityDetailsFragment fragment = new EntityDetailsFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()

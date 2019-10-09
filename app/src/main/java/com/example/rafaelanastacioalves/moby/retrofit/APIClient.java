@@ -10,6 +10,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 public interface APIClient {
 
@@ -19,6 +20,6 @@ public interface APIClient {
     @GET("{soundUrl}")
     Call<EntityDetails> getSound(@Path("soundUrl") String soundUrl);
 
-    @GET("{mediaUrl}")
-    Observable<ResponseBody> getMedia(@Path("mediaUrl") String url);
+    @GET
+    Observable<ResponseBody> getMedia(@Url String url);
 }
