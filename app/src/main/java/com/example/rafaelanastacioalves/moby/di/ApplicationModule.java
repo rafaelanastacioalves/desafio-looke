@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.rafaelanastacioalves.moby.application.MainApplication;
 import com.example.rafaelanastacioalves.moby.entitymainlisting.MainActivity;
 import com.example.rafaelanastacioalves.moby.retrofit.AppRepository;
+import com.example.rafaelanastacioalves.moby.retrofit.MediaRepository;
 
 import javax.inject.Singleton;
 
@@ -23,6 +24,12 @@ public class ApplicationModule {
     @Provides
     AppRepository provideAppRepository(){
         return new AppRepository();
+    }
+
+    @Singleton
+    @Provides
+    MediaRepository provideMediaRepository(){
+        return new MediaRepository();
     }
 
 }
