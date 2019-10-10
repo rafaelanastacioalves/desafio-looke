@@ -4,6 +4,7 @@ package com.example.rafaelanastacioalves.moby.entitydetailing;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -110,12 +111,11 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     private void playVideoFromUrl(String bg) {
         videoView.setMediaController(mediaController);
         videoView.setVideoPath(bg);
+        videoView.requestFocus();
         videoView.start();
     }
 
     private void playVideoFromUri(Uri uriReferene) {
-        mediaController.setAnchorView(videoView);
-        videoView.setMediaController(mediaController);
         videoView.setVideoURI(uriReferene);
         videoView.start();
     }

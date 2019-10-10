@@ -21,7 +21,7 @@ android {
     buildTypes {
 
         buildTypes.each {
-            it.buildConfigField "String", "API_BASE_URL", '"https://firebasestorage.googleapis.com"'
+            it.buildConfigField "String", "API_BASE_URL", '"http://linuxapp01.eastus.cloudapp.azure.com"'
             it.buildConfigField "boolean", "IS_TEST", 'false'
 
         }
@@ -104,6 +104,11 @@ dependencies {
 
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
+
+    // permissions
+    compile('com.karumi:dexter:5.0.0',{
+        exclude group: 'com.android.support'
+    })
 
 
 

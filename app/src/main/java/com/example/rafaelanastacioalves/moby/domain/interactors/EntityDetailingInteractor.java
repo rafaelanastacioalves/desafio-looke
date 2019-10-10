@@ -5,11 +5,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
-import com.example.rafaelanastacioalves.moby.retrofit.AppRepository;
 import com.example.rafaelanastacioalves.moby.retrofit.MediaRepository;
 
 import java.io.File;
@@ -44,14 +42,16 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
 
 
         Observable<MediaReference> mediaReferenceObservable = Observable.combineLatest(
-                appRepository.getMediaFromUrl(requestValues.objects.getSg()).subscribeOn(Schedulers.io()),
-                appRepository.getMediaFromUrl(requestValues.objects.getBg()).subscribeOn(Schedulers.io()),
+                appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getSg())).subscribeOn(Schedulers.io()),
+                appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getBg())).subscribeOn(Schedulers.io()),
                         (audio, video) -> {
                             return new MediaReference(audio,video);
                         });
 
         mediaReferenceObservable.observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<MediaReference>() {
+                    private MediaReference mediaReference;
+
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -59,14 +59,7 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
 
                     @Override
                     public void onNext(MediaReference mediaReference) {
-                        File file = persistVideo(mediaReference.videoResponse, requestValues.objects.getName());
-                        if (file != null){
-                            mediaReference.setVideoFile(file);
-                            resourceLiveData.postValue(Resource.success(mediaReference));
-                        }else{
-                            resourceLiveData.postValue(Resource.error(Resource.Status.GENERIC_ERROR,null, null));
-                        }
-
+                        this.mediaReference = mediaReference;
                     }
 
                     @Override
@@ -76,7 +69,15 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
 
                     @Override
                     public void onComplete() {
-
+                        if (mediaReference != null) {
+                            File file = persistVideo(mediaReference.videoResponse, requestValues.objects.getName().trim());
+                            if (file != null){
+                                mediaReference.setVideoFile(file);
+                                resourceLiveData.postValue(Resource.success(mediaReference));
+                            }else{
+                                resourceLiveData.postValue(Resource.error(Resource.Status.GENERIC_ERROR,null, null));
+                            }
+                        }
                     }
                 });
 
@@ -86,10 +87,14 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
         return resourceLiveData;
     }
 
+    private String changeToHttp(String url) {
+        return url.replace("https","http");
+    }
+
     private File persistVideo(ResponseBody body, String name) {
         try {
             // todo change the file location/name according to your needs
-            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name + ".mp4");
+            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name + ".mp4" );
 
             InputStream inputStream = null;
             OutputStream outputStream = null;

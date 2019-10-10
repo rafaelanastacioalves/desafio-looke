@@ -22,7 +22,7 @@ public class AppRepository {
 
             @Override
             protected Call<MainEntity> createCall() {
-                return apiClient.getTripPackageList("media","964a35bb-53d0-45aa-a3dd-ecad72a2f14c" );
+                return apiClient.getTripPackageList();
             }
         }.asLiveData();
     }

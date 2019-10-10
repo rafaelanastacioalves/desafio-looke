@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,12 +19,15 @@ import com.example.rafaelanastacioalves.moby.entitydetailing.EntityDetailActivit
 import com.example.rafaelanastacioalves.moby.entitydetailing.EntityDetailsFragment;
 import com.example.rafaelanastacioalves.moby.listeners.RecyclerViewClickListener;
 
+
 import java.util.List;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
 import timber.log.Timber;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final RecyclerViewClickListener mClickListener = this;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         subscribe();
 
     }
+
+
 
     private void setupDagger() {
         AndroidInjection.inject(this);

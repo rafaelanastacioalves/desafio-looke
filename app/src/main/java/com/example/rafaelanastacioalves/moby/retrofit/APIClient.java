@@ -7,6 +7,7 @@ import io.reactivex.Observable;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.OPTIONS;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -14,8 +15,8 @@ import retrofit2.http.Url;
 
 public interface APIClient {
 
-    @GET("/v0/b/desafio-dev-android.appspot.com/o/assets.json")
-    Call<MainEntity> getTripPackageList(@Query("alt")String alt, @Query("token")String token);
+    @GET("/looke/assets.json")
+    Call<MainEntity> getTripPackageList();
 
     @GET("{soundUrl}")
     Call<EntityDetails> getSound(@Path("soundUrl") String soundUrl);
