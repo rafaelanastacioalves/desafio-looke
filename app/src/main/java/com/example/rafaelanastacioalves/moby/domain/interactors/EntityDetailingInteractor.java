@@ -70,7 +70,7 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
                     @Override
                     public void onComplete() {
                         if (mediaReference != null) {
-                            File file = persistVideo(mediaReference.videoResponse, requestValues.objects.getName().trim());
+                            File file = persistVideo(mediaReference.videoResponse, "12345");
                             if (file != null){
                                 mediaReference.setVideoFile(file);
                                 resourceLiveData.postValue(Resource.success(mediaReference));

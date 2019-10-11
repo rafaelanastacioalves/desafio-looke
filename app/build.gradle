@@ -110,6 +110,10 @@ dependencies {
         exclude group: 'com.android.support'
     })
 
+    implementation "com.google.android.exoplayer:exoplayer:2.7.3"
+
+
+
 
 
 

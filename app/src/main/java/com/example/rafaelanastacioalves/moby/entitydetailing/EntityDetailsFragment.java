@@ -4,7 +4,6 @@ package com.example.rafaelanastacioalves.moby.entitydetailing;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,14 +17,28 @@ import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
+import com.example.rafaelanastacioalves.moby.BuildConfig;
 import com.example.rafaelanastacioalves.moby.R;
 import com.example.rafaelanastacioalves.moby.common.MediaReferenceHelper;
 import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -55,10 +68,14 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     ImageView tripPackageDetailImageview;
 
     @BindView(R.id.detail_entity_video)
-    VideoView videoView;
+    PlayerView playerView;
 
     private MainEntity.Objects objects;
     private MediaController mediaController;
+    private SimpleExoPlayer player;
+    private long playbackPosition = 0;
+    private int currentWindow;
+    private boolean playWhenReady;
 
     @Override
     public void onAttach(Context context) {
@@ -71,7 +88,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         super.onCreate(savedInstanceState);
         recoverVariables();
         subscribe();
-        setupMediaController();
+
 
     }
 
@@ -82,9 +99,18 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         return root;
     }
 
-    private void setupMediaController() {
-        mediaController = new MediaController(getActivity());
+
+    private void initializePlayer() {
+        player = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(getActivity()),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+
+        playerView.setPlayer(player);
+
+        player.setPlayWhenReady(playWhenReady);
+        player.seekTo(currentWindow, playbackPosition);
     }
+
 
     private void settupadagger() {
         AndroidSupportInjection.inject(this);
@@ -100,7 +126,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         mLiveDataEntityDetailsViewModel.getEntityDetails(objects).observe(this, new Observer<Resource<MediaReference>>() {
             @Override
             public void onChanged(@Nullable Resource<MediaReference> entityDetails) {
-                if (entityDetails != null && entityDetails.status == Resource.Status.SUCCESS){
+                if (entityDetails != null && entityDetails.status == Resource.Status.SUCCESS) {
                     MediaReference mediaReference = entityDetails.data;
                     playVideoFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getVideoFile(), getContext()));
                 }
@@ -108,16 +134,34 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         });
     }
 
-    private void playVideoFromUrl(String bg) {
-        videoView.setMediaController(mediaController);
-        videoView.setVideoPath(bg);
-        videoView.requestFocus();
-        videoView.start();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        super.onStart();
+        if (Util.SDK_INT > 23) {
+            initializePlayer();
+        }
     }
 
     private void playVideoFromUri(Uri uriReferene) {
-        videoView.setVideoURI(uriReferene);
-        videoView.start();
+        MediaSource mediaSource = buildMediaSource(uriReferene);
+        player.prepare(mediaSource);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        super.onResume();
+        if ((Util.SDK_INT <= 23 || player == null)) {
+            initializePlayer();
+        }
+    }
+
+    private MediaSource buildMediaSource(Uri uriReference) {
+        DataSource.Factory dataSourceFactory = new FileDataSourceFactory();
+        return new ExtractorMediaSource(uriReference, dataSourceFactory,
+                new DefaultExtractorsFactory(), null, null);
     }
 
     private View inflateViews(LayoutInflater inflater, ViewGroup container) {
@@ -154,8 +198,29 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
+        if (Util.SDK_INT > 23) {
+            releasePlayer();
+        }
+    }
+
+    private void releasePlayer() {
+        if (player != null) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
+            player.release();
+            player = null;
+        }
     }
 
     @Override
