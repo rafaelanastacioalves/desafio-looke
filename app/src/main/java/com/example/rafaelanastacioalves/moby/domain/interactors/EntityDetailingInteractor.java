@@ -70,9 +70,11 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
                     @Override
                     public void onComplete() {
                         if (mediaReference != null) {
-                            File file = persistVideo(mediaReference.videoResponse, "12345");
-                            if (file != null){
-                                mediaReference.setVideoFile(file);
+                            File videoFile = persistMedia(mediaReference.videoResponse, requestValues.objects.getName().trim()+ "-" + "video.mp4");
+                            File audioFile = persistMedia(mediaReference.audioResponse, requestValues.objects.getName().trim() + "-" + "audio.mp3");
+                            if (videoFile != null && audioFile != null){
+                                mediaReference.setVideoFile(videoFile);
+                                mediaReference.setAudioFile(audioFile);
                                 resourceLiveData.postValue(Resource.success(mediaReference));
                             }else{
                                 resourceLiveData.postValue(Resource.error(Resource.Status.GENERIC_ERROR,null, null));
@@ -91,10 +93,10 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
         return url.replace("https","http");
     }
 
-    private File persistVideo(ResponseBody body, String name) {
+    private File persistMedia(ResponseBody body, String name) {
         try {
             // todo change the file location/name according to your needs
-            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name + ".mp4" );
+            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name);
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -124,6 +126,7 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
 
                 outputStream.flush();
 
+                Log.d(TAG, "file path: " + file.getPath());
                 return file;
             } catch (IOException e) {
                 return null;

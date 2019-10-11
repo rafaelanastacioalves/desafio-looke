@@ -74,8 +74,8 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     private MediaController mediaController;
     private SimpleExoPlayer player;
     private long playbackPosition = 0;
-    private int currentWindow;
-    private boolean playWhenReady;
+    private int currentWindow =0;
+    private boolean playWhenReady = true;
 
     @Override
     public void onAttach(Context context) {
@@ -106,7 +106,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
                 new DefaultTrackSelector(), new DefaultLoadControl());
 
         playerView.setPlayer(player);
-
+        player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.setPlayWhenReady(playWhenReady);
         player.seekTo(currentWindow, playbackPosition);
     }

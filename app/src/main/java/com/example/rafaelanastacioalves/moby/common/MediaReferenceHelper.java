@@ -12,7 +12,7 @@ import java.io.File;
 public class MediaReferenceHelper {
 
     public static Uri getMediaUriFrom(@NonNull File file, Context context){
-        final Uri uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
-        return uri;
+        return Uri.fromFile(file);
+
     }
 }

@@ -9,6 +9,7 @@ public class MediaReference {
     public final ResponseBody videoResponse;
     public File getVideoReference;
     private File videoFile;
+    private File audioFile;
 
     public MediaReference(ResponseBody audio, ResponseBody video) {
         this.audioResponse = audio;
@@ -21,5 +22,9 @@ public class MediaReference {
 
     public File getVideoFile() {
         return videoFile;
+    }
+
+    public void setAudioFile(File audioFile) {
+        this.audioFile = audioFile;
     }
 }
