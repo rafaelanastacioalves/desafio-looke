@@ -18,7 +18,6 @@ import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.rafaelanastacioalves.moby.BuildConfig;
 import com.example.rafaelanastacioalves.moby.R;
 import com.example.rafaelanastacioalves.moby.common.MediaReferenceHelper;
 import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
@@ -36,7 +35,6 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.Callback;
@@ -73,7 +71,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     private MainEntity.Objects objects;
     private MediaController mediaController;
     private SimpleExoPlayer player;
-    private long playbackPosition = 0;
+    private long videoPlaybackPosition = 0;
     private int currentWindow =0;
     private boolean playWhenReady = true;
 
@@ -108,7 +106,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         playerView.setPlayer(player);
         player.setRepeatMode(Player.REPEAT_MODE_ONE);
         player.setPlayWhenReady(playWhenReady);
-        player.seekTo(currentWindow, playbackPosition);
+        player.seekTo(currentWindow, videoPlaybackPosition);
     }
 
 
@@ -215,7 +213,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
 
     private void releasePlayer() {
         if (player != null) {
-            playbackPosition = player.getCurrentPosition();
+            videoPlaybackPosition = player.getCurrentPosition();
             currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
             player.release();
