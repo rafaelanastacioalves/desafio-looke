@@ -66,14 +66,23 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     ImageView tripPackageDetailImageview;
 
     @BindView(R.id.detail_entity_video)
-    PlayerView playerView;
+    PlayerView videoPlayerView;
+
+    @BindView(R.id.detail_entity_audio)
+    PlayerView audioPlayerView;
 
     private MainEntity.Objects objects;
-    private MediaController mediaController;
-    private SimpleExoPlayer player;
+    private SimpleExoPlayer videoPlayer;
+    private SimpleExoPlayer audioPlayer;
     private long videoPlaybackPosition = 0;
-    private int currentWindow =0;
-    private boolean playWhenReady = true;
+    private int videoCurrentWindow =0;
+    private boolean videoPlayWhenReady = true;
+
+    private long audioPlaybackPosition = 0;
+    private int audioCurrentWindow =0;
+    private boolean audioPlayWhenReady = true;
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -98,15 +107,28 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     }
 
 
-    private void initializePlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(
+    private void initializePlayers() {
+        videoPlayer = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getActivity()),
                 new DefaultTrackSelector(), new DefaultLoadControl());
 
-        playerView.setPlayer(player);
-        player.setRepeatMode(Player.REPEAT_MODE_ONE);
-        player.setPlayWhenReady(playWhenReady);
-        player.seekTo(currentWindow, videoPlaybackPosition);
+        audioPlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(getActivity()),
+                new DefaultTrackSelector(), new DefaultLoadControl()
+        );
+
+        videoPlayerView.setPlayer(videoPlayer);
+        videoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+        videoPlayer.setPlayWhenReady(videoPlayWhenReady);
+        videoPlayer.seekTo(videoCurrentWindow, videoPlaybackPosition);
+
+        audioPlayerView.setPlayer(audioPlayer);
+        audioPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+        audioPlayer.setPlayWhenReady(videoPlayWhenReady);
+        audioPlayer.seekTo(videoCurrentWindow, videoPlaybackPosition);
+
+
+
     }
 
 
@@ -127,6 +149,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
                 if (entityDetails != null && entityDetails.status == Resource.Status.SUCCESS) {
                     MediaReference mediaReference = entityDetails.data;
                     playVideoFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getVideoFile(), getContext()));
+                    playAudioFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getAudioFile(), getContext()));
                 }
             }
         });
@@ -138,21 +161,26 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         super.onStart();
         super.onStart();
         if (Util.SDK_INT > 23) {
-            initializePlayer();
+            initializePlayers();
         }
+    }
+
+    private void playAudioFromUri(Uri mediaUriFrom) {
+        MediaSource mediaSource = buildMediaSource(mediaUriFrom);
+        audioPlayer.prepare(mediaSource);
     }
 
     private void playVideoFromUri(Uri uriReferene) {
         MediaSource mediaSource = buildMediaSource(uriReferene);
-        player.prepare(mediaSource);
+        videoPlayer.prepare(mediaSource);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         super.onResume();
-        if ((Util.SDK_INT <= 23 || player == null)) {
-            initializePlayer();
+        if ((Util.SDK_INT <= 23 || videoPlayer == null)) {
+            initializePlayers();
         }
     }
 
@@ -212,12 +240,20 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     }
 
     private void releasePlayer() {
-        if (player != null) {
-            videoPlaybackPosition = player.getCurrentPosition();
-            currentWindow = player.getCurrentWindowIndex();
-            playWhenReady = player.getPlayWhenReady();
-            player.release();
-            player = null;
+        if (videoPlayer != null) {
+            videoPlaybackPosition = videoPlayer.getCurrentPosition();
+            videoCurrentWindow = videoPlayer.getCurrentWindowIndex();
+            videoPlayWhenReady = videoPlayer.getPlayWhenReady();
+            videoPlayer.release();
+            videoPlayer = null;
+        }
+
+        if (audioPlayer != null) {
+            audioPlaybackPosition = audioPlayer.getCurrentPosition();
+            audioCurrentWindow = audioPlayer.getCurrentWindowIndex();
+            audioPlayWhenReady = audioPlayer.getPlayWhenReady();
+            audioPlayer.release();
+            audioPlayer = null;
         }
     }
 

@@ -27,4 +27,8 @@ public class MediaReference {
     public void setAudioFile(File audioFile) {
         this.audioFile = audioFile;
     }
+
+    public File getAudioFile() {
+        return audioFile;
+    }
 }

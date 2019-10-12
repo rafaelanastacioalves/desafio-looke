@@ -106,7 +106,7 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
 
     // permissions
-    compile('com.karumi:dexter:5.0.0',{
+    implementation('com.karumi:dexter:5.0.0',{
         exclude group: 'com.android.support'
     })
 
