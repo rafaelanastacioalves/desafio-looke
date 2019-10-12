@@ -26,13 +26,18 @@ import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
@@ -116,6 +121,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
                 new DefaultRenderersFactory(getActivity()),
                 new DefaultTrackSelector(), new DefaultLoadControl()
         );
+        audioPlayer.addListener(getAudioMediaListener());
 
         videoPlayerView.setPlayer(videoPlayer);
         videoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
@@ -123,9 +129,10 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         videoPlayer.seekTo(videoCurrentWindow, videoPlaybackPosition);
 
         audioPlayerView.setPlayer(audioPlayer);
-        audioPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         audioPlayer.setPlayWhenReady(videoPlayWhenReady);
         audioPlayer.seekTo(videoCurrentWindow, videoPlaybackPosition);
+
+
 
 
 
@@ -155,6 +162,13 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         });
     }
 
+
+    private void askVideoToStop() {
+        videoPlayer.stop();
+        videoPlayer.seekTo(0);
+
+        Toast.makeText(getActivity(), "Video stopped", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void onStart() {
@@ -260,5 +274,63 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     @Override
     public void onClick(View v) {
         Toast.makeText(getActivity(), "Comprado!", Toast.LENGTH_SHORT).show();
+    }
+
+    private Player.EventListener getAudioMediaListener() {
+        return new Player.EventListener() {
+            @Override
+            public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+            }
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                switch (playbackState){
+                    case Player.STATE_ENDED:
+                        askVideoToStop();
+                        break;
+                }
+            }
+
+            @Override
+            public void onRepeatModeChanged(int repeatMode) {
+
+            }
+
+            @Override
+            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+
+            }
+
+            @Override
+            public void onPositionDiscontinuity(int reason) {
+
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+            }
+
+            @Override
+            public void onSeekProcessed() {
+
+            }
+        };
     }
 }
