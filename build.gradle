@@ -36,7 +36,7 @@ ext {
     facebookAndroidExt = "4.27.0"
     retrofitExt = "2.4.0"
     okhttp3Ext = "3.10.0"
-    androidConstraintLayout = "1.0.2"
+    androidConstraintLayout = "1.+"
     jakewhartonStuff = "8.4.0"
     timberExt = "4.5.1"
     picassoExt = "2.71828"

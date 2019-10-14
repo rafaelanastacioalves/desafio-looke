@@ -115,6 +115,7 @@ public class EntityDetailsFragment extends DaggerFragment {
                              Bundle savedInstanceState) {
         View root = inflateViews(inflater, container);
 
+        setViewsWith(objects);
         return root;
     }
 
@@ -250,9 +251,9 @@ public class EntityDetailsFragment extends DaggerFragment {
         }
     }
 
-    private void setViewsWith(EntityDetails entityDetails) {
-        tripPackageDetailValor.setText(entityDetails.getPrice());
-        setupActionBarWithTitle(entityDetails.getTitle());
+    private void setViewsWith(MainEntity.Objects objects) {
+        tripPackageDetailValor.setText(objects.getName());
+        setupActionBarWithTitle(objects.getName());
     }
 
     private void showErrorView(){

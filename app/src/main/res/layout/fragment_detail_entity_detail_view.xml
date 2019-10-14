@@ -1,70 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-   <FrameLayout
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
-       <android.support.constraint.ConstraintLayout
-           android:id="@+id/main_view"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           tools:context=".entitydetailing.EntityDetailActivity">
+    android:layout_height="match_parent"
+    tools:context=".entitydetailing.EntityDetailActivity">
 
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/main_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
 
+                <com.google.android.exoplayer2.ui.PlayerView
 
-           <TextView
-               android:id="@+id/detail_entity_detail_name"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:layout_marginStart="@dimen/default_internal_margin"
-               android:layout_marginLeft="@dimen/default_internal_margin"
-               android:layout_marginTop="@dimen/default_internal_margin"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@+id/detail_entity_video"
-               tools:text="@string/valor_text" />
+                    android:id="@+id/detail_entity_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:use_controller="false" />
+                <TextView
+                    android:id="@+id/detail_entity_detail_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/default_internal_margin"
+                    android:layout_marginLeft="@dimen/default_internal_margin"
+                    android:layout_marginTop="@dimen/default_internal_margin"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_entity_video"
+                    tools:text="@string/valor_text" />
 
-           <com.google.android.exoplayer2.ui.PlayerView
-               android:id="@+id/detail_entity_video"
-               android:layout_width="192dp"
-               android:layout_height="108dp"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toTopOf="parent"
-               app:use_controller="false" />
-
-           <com.google.android.exoplayer2.ui.PlayerView
-               android:id="@+id/detail_entity_audio"
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               app:layout_constraintStart_toStartOf="parent"
-               app:layout_constraintTop_toBottomOf="@id/detail_entity_detail_name"
-               app:use_controller="false" />
-
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/detail_entity_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/detail_entity_detail_name"
+                    app:use_controller="false" />
 
 
-       </android.support.constraint.ConstraintLayout>
-       <TextView
-            android:id="@+id/error_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            tools:visibility="visible"
-            android:visibility="gone"
-            android:text="@string/error_loading"/>
-       <ProgressBar
-           android:id="@+id/progress_bar"
-           android:visibility="gone"
-           style="@style/Widget.AppCompat.ProgressBar"
-           tools:visibility="visible"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_gravity="center"/>
-   </FrameLayout>
-</android.support.v4.widget.NestedScrollView>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/error_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/error_loading"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="gone" />
+        </FrameLayout>
+
+</LinearLayout>
 
