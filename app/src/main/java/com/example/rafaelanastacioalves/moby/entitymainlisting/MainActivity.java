@@ -11,6 +11,8 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.rafaelanastacioalves.moby.R;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
@@ -31,6 +33,8 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final RecyclerViewClickListener mClickListener = this;
+    private ProgressBar progressBar;
+    private TextView errorView;
     private MainEntityAdapter mTripPackageListAdapter;
     private RecyclerView mRecyclerView;
     private LiveDataMainEntityListViewModel mLiveDataMainEntityListViewModel;
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                         case INTERNAL_SERVER_ERROR:
                             hideLoading();
                             showErrorView();
+
                             break;
                         case GENERIC_ERROR:
                             Timber.d("Generic Error");
@@ -73,11 +78,17 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                             showErrorView();
                             break;
                         case LOADING:
+                            hideMainView();
+                            hideErrorView();
                             showLoading();
+                            break;
+                        case CONNECTIVITY_ERROR:
+                            showErrorView();
                             break;
                         case SUCCESS:
                             Timber.d("Success");
                             hideLoading();
+                            showMainView();
                             populateRecyclerView(mainEntityResource.data.getObjects());
                             break;
 
@@ -89,18 +100,30 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         });
     }
 
-    private void hideLoading() {
-
+    private void showMainView() {
+        mRecyclerView.setVisibility(View.VISIBLE);
     }
 
-    private void showLoading() {
+    private void hideMainView() {
+        mRecyclerView.setVisibility(View.GONE);
+    }
 
+    private void hideLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showLoading(){
+        progressBar.setVisibility(View.VISIBLE);
     }
 
 
 
     private void showErrorView() {
-        //TODO: implement error view
+        errorView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideErrorView() {
+        errorView.setVisibility(View.GONE);
     }
 
     private void setupViews() {
@@ -118,6 +141,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
         }
         mTripPackageListAdapter.setRecyclerViewClickListener(mClickListener);
         mRecyclerView.setAdapter(mTripPackageListAdapter);
+        progressBar = findViewById(R.id.progress_bar);
+        errorView = findViewById(R.id.error_view);
     }
 
 

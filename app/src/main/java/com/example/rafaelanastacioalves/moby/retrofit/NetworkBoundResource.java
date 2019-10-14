@@ -5,7 +5,10 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
 
+import java.io.IOException;
+
 import javax.net.ssl.HttpsURLConnection;
+import javax.xml.transform.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,6 +62,8 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
                     if (httpException.code() == HttpsURLConnection.HTTP_INTERNAL_ERROR){
                         setValue((Resource<ResultType>) Resource.error(Resource.Status.INTERNAL_SERVER_ERROR, null, null));
                     }
+                }if(t instanceof IOException) {
+                    setValue((Resource<ResultType>) Resource.error(Resource.Status.CONNECTIVITY_ERROR, null, t.getMessage()));
                 }else{
                     setValue((Resource<ResultType>) Resource.error(Resource.Status.GENERIC_ERROR,null, null));
                 }

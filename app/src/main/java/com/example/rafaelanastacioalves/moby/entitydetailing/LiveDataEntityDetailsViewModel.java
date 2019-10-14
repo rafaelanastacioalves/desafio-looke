@@ -19,7 +19,7 @@ public class LiveDataEntityDetailsViewModel extends ViewModel {
         this.mEntityDetailInteractor = mInteractor;
     }
 
-    public LiveData<Resource<MediaReference>> getEntityDetails(MainEntity.Objects objects) {
+    public LiveData<Resource<MediaReference>> getMedia(MainEntity.Objects objects) {
         EntityDetailingInteractor.RequestValues requestValues = new EntityDetailingInteractor.RequestValues(objects);
         mEntityDetails = mEntityDetailInteractor.execute(requestValues);
         return mEntityDetails;

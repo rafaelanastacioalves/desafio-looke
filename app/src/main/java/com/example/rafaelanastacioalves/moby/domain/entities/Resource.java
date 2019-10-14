@@ -26,5 +26,6 @@ public class Resource<T> {
         return new Resource<>(Status.LOADING, data, null);
     }
 
-    public enum Status { SUCCESS, INTERNAL_SERVER_ERROR ,GENERIC_ERROR, LOADING}
+    public enum Status { SUCCESS, INTERNAL_SERVER_ERROR ,GENERIC_ERROR, CONNECTIVITY_ERROR ,LOADING;
+    }
 }

@@ -40,7 +40,7 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
     public LiveData<Resource<MediaReference>> execute(RequestValues requestValues) {
         MutableLiveData<Resource<MediaReference>> resourceLiveData = new MutableLiveData();
 
-
+        resourceLiveData.postValue(Resource.loading(null));
         Observable<MediaReference> mediaReferenceObservable = Observable.combineLatest(
                 appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getSg())).subscribeOn(Schedulers.io()),
                 appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getBg())).subscribeOn(Schedulers.io()),

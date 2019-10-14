@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,7 +55,7 @@ import dagger.android.support.DaggerFragment;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EntityDetailsFragment extends DaggerFragment implements View.OnClickListener {
+public class EntityDetailsFragment extends DaggerFragment {
 
     public static String ARG_OBJECTS;
 
@@ -67,14 +67,20 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     @BindView(R.id.detail_entity_detail_name)
     TextView tripPackageDetailValor;
 
-    @BindView(R.id.trip_package_detail_imageview)
-    ImageView tripPackageDetailImageview;
+    @BindView(R.id.main_view)
+    View mainView;
 
     @BindView(R.id.detail_entity_video)
     PlayerView videoPlayerView;
 
     @BindView(R.id.detail_entity_audio)
     PlayerView audioPlayerView;
+
+    @BindView(R.id.error_view)
+    TextView errorView;
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
 
     private MainEntity.Objects objects;
     private SimpleExoPlayer videoPlayer;
@@ -99,7 +105,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         recoverVariables();
-        subscribe();
+        loadMedia();
 
 
     }
@@ -108,6 +114,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflateViews(inflater, container);
+
         return root;
     }
 
@@ -148,15 +155,39 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
 
     }
 
-    private void subscribe() {
+    private void loadMedia() {
         mLiveDataEntityDetailsViewModel = ViewModelProviders.of(this, entityDetailViewModelFactory).get(LiveDataEntityDetailsViewModel.class);
-        mLiveDataEntityDetailsViewModel.getEntityDetails(objects).observe(this, new Observer<Resource<MediaReference>>() {
+        mLiveDataEntityDetailsViewModel.getMedia(objects).observe(this, new Observer<Resource<MediaReference>>() {
             @Override
             public void onChanged(@Nullable Resource<MediaReference> entityDetails) {
-                if (entityDetails != null && entityDetails.status == Resource.Status.SUCCESS) {
-                    MediaReference mediaReference = entityDetails.data;
-                    playVideoFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getVideoFile(), getContext()));
-                    playAudioFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getAudioFile(), getContext()));
+                if (entityDetails != null && entityDetails.status != null) {
+
+                    switch (entityDetails.status){
+                        case SUCCESS:
+                            hideProgressBar();
+                            showMainView();
+                            MediaReference mediaReference = entityDetails.data;
+                            playVideoFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getVideoFile(), getContext()));
+                            playAudioFromUri(MediaReferenceHelper.getMediaUriFrom(mediaReference.getAudioFile(), getContext()));
+                            break;
+                        case LOADING:
+                            showProgressBar();
+                            hideMainView();
+                            break;
+                        case GENERIC_ERROR:
+                            hideProgressBar();
+                            showErrorView();
+                            break;
+                        case CONNECTIVITY_ERROR:
+                            hideProgressBar();
+                            showErrorView();
+                            break;
+                        case INTERNAL_SERVER_ERROR:
+                            hideProgressBar();
+                            showErrorView();
+                            break;
+                    }
+
                 }
             }
         });
@@ -222,21 +253,31 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
     private void setViewsWith(EntityDetails entityDetails) {
         tripPackageDetailValor.setText(entityDetails.getPrice());
         setupActionBarWithTitle(entityDetails.getTitle());
-        Picasso.get()
-                .load(entityDetails.getImage_url())
-                .into(tripPackageDetailImageview, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        getActivity().supportStartPostponedEnterTransition();
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-
-                    }
-                });
     }
 
+    private void showErrorView(){
+        errorView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideErrorView(){
+        errorView.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar(){
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showMainView(){
+        mainView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideMainView(){
+        mainView.setVisibility(View.GONE);
+    }
     @Override
     public void onPause() {
         super.onPause();
@@ -271,10 +312,7 @@ public class EntityDetailsFragment extends DaggerFragment implements View.OnClic
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        Toast.makeText(getActivity(), "Comprado!", Toast.LENGTH_SHORT).show();
-    }
+
 
     private Player.EventListener getAudioMediaListener() {
         return new Player.EventListener() {
