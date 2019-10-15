@@ -8,7 +8,7 @@ import android.util.Log;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
-import com.example.rafaelanastacioalves.moby.retrofit.MediaRepository;
+import com.example.rafaelanastacioalves.moby.repository.MediaRepository;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,10 +42,14 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
 
         resourceLiveData.postValue(Resource.loading(null));
         Observable<MediaReference> mediaReferenceObservable = Observable.combineLatest(
-                appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getSg())).subscribeOn(Schedulers.io()),
-                appRepository.getMediaFromUrl(changeToHttp(requestValues.objects.getBg())).subscribeOn(Schedulers.io()),
-                        (audio, video) -> {
-                            return new MediaReference(audio,video);
+                appRepository.getMediaFrom(changeToHttp(requestValues.objects.getSg()),
+                        requestValues.objects.getName().trim() + "-" + "audio.mp3")
+                        .subscribeOn(Schedulers.io()),
+                appRepository.getMediaFrom(changeToHttp(requestValues.objects.getBg()),
+                        requestValues.objects.getName().trim()+ "-" + "video.mp4")
+                        .subscribeOn(Schedulers.io()),
+                        (audioFile, videoFile) -> {
+                            return new MediaReference(audioFile,videoFile);
                         });
 
         mediaReferenceObservable.observeOn(AndroidSchedulers.mainThread())
@@ -70,15 +74,7 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
                     @Override
                     public void onComplete() {
                         if (mediaReference != null) {
-                            File videoFile = persistMedia(mediaReference.videoResponse, requestValues.objects.getName().trim()+ "-" + "video.mp4");
-                            File audioFile = persistMedia(mediaReference.audioResponse, requestValues.objects.getName().trim() + "-" + "audio.mp3");
-                            if (videoFile != null && audioFile != null){
-                                mediaReference.setVideoFile(videoFile);
-                                mediaReference.setAudioFile(audioFile);
-                                resourceLiveData.postValue(Resource.success(mediaReference));
-                            }else{
-                                resourceLiveData.postValue(Resource.error(Resource.Status.GENERIC_ERROR,null, null));
-                            }
+                           resourceLiveData.postValue(Resource.success(mediaReference));
                         }
                     }
                 });
@@ -93,56 +89,6 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
         return url.replace("https","http");
     }
 
-    private File persistMedia(ResponseBody body, String name) {
-        try {
-            // todo change the file location/name according to your needs
-            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name);
-
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
-
-            try {
-                byte[] fileReader = new byte[4096];
-
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(file);
-
-                while (true) {
-                    int read = inputStream.read(fileReader);
-
-                    if (read == -1) {
-                        break;
-                    }
-
-                    outputStream.write(fileReader, 0, read);
-
-                    fileSizeDownloaded += read;
-
-                    Log.d(TAG, "file download: " + fileSizeDownloaded + " of " + fileSize);
-                }
-
-                outputStream.flush();
-
-                Log.d(TAG, "file path: " + file.getPath());
-                return file;
-            } catch (IOException e) {
-                return null;
-            } finally {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            }
-        } catch (IOException e) {
-            return null;
-        }
-    }
 
     private void persistAudio(ResponseBody audioResponse) {
 

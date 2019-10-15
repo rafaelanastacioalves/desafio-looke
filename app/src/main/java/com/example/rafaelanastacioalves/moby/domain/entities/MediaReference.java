@@ -5,15 +5,13 @@ import java.io.File;
 import okhttp3.ResponseBody;
 
 public class MediaReference {
-    public final ResponseBody audioResponse;
-    public final ResponseBody videoResponse;
-    public File getVideoReference;
+
     private File videoFile;
     private File audioFile;
 
-    public MediaReference(ResponseBody audio, ResponseBody video) {
-        this.audioResponse = audio;
-        this.videoResponse = video;
+    public MediaReference(File audio, File video) {
+        this.audioFile = audio;
+        this.videoFile = video;
     }
 
     public void setVideoFile(File file) {

@@ -3,9 +3,8 @@ package com.example.rafaelanastacioalves.moby.di;
 import android.content.Context;
 
 import com.example.rafaelanastacioalves.moby.application.MainApplication;
-import com.example.rafaelanastacioalves.moby.entitymainlisting.MainActivity;
-import com.example.rafaelanastacioalves.moby.retrofit.AppRepository;
-import com.example.rafaelanastacioalves.moby.retrofit.MediaRepository;
+import com.example.rafaelanastacioalves.moby.repository.AppRepository;
+import com.example.rafaelanastacioalves.moby.repository.MediaRepository;
 
 import javax.inject.Singleton;
 

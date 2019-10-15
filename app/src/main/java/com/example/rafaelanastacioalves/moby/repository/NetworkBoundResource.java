@@ -1,4 +1,4 @@
-package com.example.rafaelanastacioalves.moby.retrofit;
+package com.example.rafaelanastacioalves.moby.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -8,7 +8,6 @@ import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
 import java.io.IOException;
 
 import javax.net.ssl.HttpsURLConnection;
-import javax.xml.transform.Result;
 
 import retrofit2.Call;
 import retrofit2.Callback;

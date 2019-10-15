@@ -1,4 +1,4 @@
-package com.example.rafaelanastacioalves.moby.retrofit;
+package com.example.rafaelanastacioalves.moby.repository;
 
 import android.arch.lifecycle.LiveData;
 

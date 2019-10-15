@@ -6,9 +6,7 @@ import android.arch.lifecycle.Transformations;
 
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
-import com.example.rafaelanastacioalves.moby.retrofit.AppRepository;
-
-import java.util.List;
+import com.example.rafaelanastacioalves.moby.repository.AppRepository;
 
 import javax.inject.Inject;
 
