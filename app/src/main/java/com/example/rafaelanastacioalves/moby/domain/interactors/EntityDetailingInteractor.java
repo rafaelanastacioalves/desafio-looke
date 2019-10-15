@@ -44,10 +44,10 @@ public class EntityDetailingInteractor implements Interactor<EntityDetailingInte
         Observable<MediaReference> mediaReferenceObservable = Observable.combineLatest(
                 appRepository.getMediaFrom(changeToHttp(requestValues.objects.getSg()),
                         requestValues.objects.getName().trim() + "-" + "audio.mp3")
-                        .subscribeOn(Schedulers.io()),
+                        .subscribeOn(Schedulers.newThread()),
                 appRepository.getMediaFrom(changeToHttp(requestValues.objects.getBg()),
                         requestValues.objects.getName().trim()+ "-" + "video.mp4")
-                        .subscribeOn(Schedulers.io()),
+                        .subscribeOn(Schedulers.newThread()),
                         (audioFile, videoFile) -> {
                             return new MediaReference(audioFile,videoFile);
                         });

@@ -14,19 +14,29 @@ public class MediaRepository {
 
     public Observable<File> getMediaFrom(String url, String saveName){
         return Observable.create(emitter -> {
-            final APIClient apiClient = ServiceGenerator.buildReactiveService(APIClient.class);
-            ResponseBody responseBody = apiClient.getMedia(url).execute().body();
 
-            try {
-            }catch (Exception e){
-                emitter.onError(e);
-            }
-            if (responseBody!=null){
-                emitter.onNext(MediaReferenceHelper.persistMedia(responseBody, saveName));
-            }else {
-                emitter.onError(new NullPointerException("Response Body null"));
+            if (MediaReferenceHelper.hasMediaWithName(saveName)){
+                emitter.onNext(MediaReferenceHelper.getMediaForName(saveName));
+            }else{
+                final APIClient apiClient = ServiceGenerator.buildReactiveService(APIClient.class);
+                ResponseBody responseBody = apiClient.getMedia(url).execute().body();
+                if (responseBody!=null){
+                    MediaReferenceHelper.persistMedia(responseBody, saveName);
+                    emitter.onNext(MediaReferenceHelper.getMediaForName(saveName));
+                }else {
+                    emitter.onError(new NullPointerException("Response Body null"));
+                }
+                try {
+                }catch (Exception e){
+                    emitter.onError(e);
+                }
+
             }
 
+
+
+
+            emitter.onComplete();
         });
     }
 }

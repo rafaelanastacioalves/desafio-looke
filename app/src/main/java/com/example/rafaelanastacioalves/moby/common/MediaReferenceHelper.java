@@ -26,10 +26,9 @@ public class MediaReferenceHelper {
 
     }
 
-    public static File persistMedia(ResponseBody body, String name) {
-        try {
+    public static void persistMedia(ResponseBody body, String name) throws Exception {
             // todo change the file location/name according to your needs
-            File file = new File(Environment.getExternalStorageDirectory() + "/"  + name);
+            File file = new File(convertToStandardPath(name));
 
             InputStream inputStream = null;
             OutputStream outputStream = null;
@@ -60,9 +59,8 @@ public class MediaReferenceHelper {
                 outputStream.flush();
 
                 Log.d(TAG, "file path: " + file.getPath());
-                return file;
             } catch (IOException e) {
-                return null;
+                throw e;
             } finally {
                 if (inputStream != null) {
                     inputStream.close();
@@ -72,9 +70,19 @@ public class MediaReferenceHelper {
                     outputStream.close();
                 }
             }
-        } catch (IOException e) {
-            return null;
-        }
+
     }
 
+    public static boolean hasMediaWithName(String name){
+        File file = new File(convertToStandardPath(name));
+        return file.exists();
+    }
+
+    public static File getMediaForName(String saveName) {
+        return new File(convertToStandardPath(saveName));
+    }
+
+    private static String convertToStandardPath(String saveName) {
+        return Environment.getExternalStorageDirectory() + "/" + saveName;
+    }
 }
