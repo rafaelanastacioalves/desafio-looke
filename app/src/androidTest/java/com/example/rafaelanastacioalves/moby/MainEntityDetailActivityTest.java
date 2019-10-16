@@ -57,7 +57,7 @@ public class MainEntityDetailActivityTest {
         );
 
         Intent intent = new Intent();
-        intent.putExtra(EntityDetailsFragment.ARG_OBJECTS, MOCK_PACKAGE_ID);
+        intent.putExtra(EntityDetailsFragment.MAIN_ENTITY, MOCK_PACKAGE_ID);
         tripPackageDetailActivityTestRule.launchActivity(intent);
 
 

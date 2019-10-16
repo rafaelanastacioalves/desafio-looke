@@ -2,22 +2,23 @@ package com.example.rafaelanastacioalves.moby.entitydetailing;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.example.rafaelanastacioalves.moby.R;
+import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionDeniedResponse;
-import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
-import timber.log.Timber;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -25,30 +26,50 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 public class EntityDetailActivity extends AppCompatActivity {
 
+    @BindView(R.id.previous_music)
+    AppCompatImageView previousButton;
+
+    @BindView(R.id.next_music)
+    AppCompatImageView nextButton;
+    private int position;
+    private MainEntity mainEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AndroidInjection.inject(this);
         setContentView(R.layout.activity_package_detail);
+        ButterKnife.bind(this);
         setupActionBar();
+        setupListeners();
         if (savedInstanceState == null) {
+            recoverVariables();
+
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             checkPermission();
         }
     }
 
-    private void showFragment() {
+    private void setupListeners() {
+        nextButton.setOnClickListener(v -> onClickNext());
+        previousButton.setOnClickListener(v -> onClickPrevious() );
+    }
+
+    private void recoverVariables() {
+        this.position = getIntent().getIntExtra(EntityDetailsFragment.ARG_POSITION, 0);
+        this.mainEntity = (MainEntity) getIntent().getSerializableExtra(EntityDetailsFragment.MAIN_ENTITY);
+    }
+
+    private void showFragmentForListPosition(int position) {
         Bundle arguments = new Bundle();
-        arguments.putSerializable(EntityDetailsFragment.ARG_OBJECTS,
-                getIntent().getSerializableExtra(EntityDetailsFragment.ARG_OBJECTS));
+        arguments.putSerializable(EntityDetailsFragment.MAIN_ENTITY,
+                mainEntity.getObjects().get(position));
         EntityDetailsFragment fragment = new EntityDetailsFragment();
         fragment.setArguments(arguments);
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.package_detail_fragment_container, fragment)
+                .replace(R.id.package_detail_fragment_container, fragment)
                 .commit();
-        supportPostponeEnterTransition();
     }
 
     private void setupActionBar() {
@@ -64,7 +85,7 @@ public class EntityDetailActivity extends AppCompatActivity {
 
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        showFragment();
+                        showFragmentForListPosition(position);
                     }
 
                     @Override
@@ -73,6 +94,24 @@ public class EntityDetailActivity extends AppCompatActivity {
                     }
                 })
                 .check();
+    }
+
+    private void onClickNext() {
+        if (position + 1 < mainEntity.getObjects().size()){
+            position++;
+            showFragmentForListPosition(position);
+        }else{
+            Toast.makeText(this, "End Of List", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void onClickPrevious() {
+        if (position -1 > -1){
+            position--;
+            showFragmentForListPosition(position);
+        }else{
+            Toast.makeText(this, "End Of List", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

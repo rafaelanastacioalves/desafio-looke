@@ -13,14 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.rafaelanastacioalves.moby.R;
 import com.example.rafaelanastacioalves.moby.common.MediaReferenceHelper;
-import com.example.rafaelanastacioalves.moby.domain.entities.EntityDetails;
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.MediaReference;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
@@ -42,8 +40,6 @@ import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.FileDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import javax.inject.Inject;
 
@@ -57,7 +53,8 @@ import dagger.android.support.DaggerFragment;
  */
 public class EntityDetailsFragment extends DaggerFragment {
 
-    public static String ARG_OBJECTS;
+    public static final String ARG_POSITION = "position";
+    public static final String MAIN_ENTITY = "objects";
 
     private LiveDataEntityDetailsViewModel mLiveDataEntityDetailsViewModel;
 
@@ -152,7 +149,7 @@ public class EntityDetailsFragment extends DaggerFragment {
     }
 
     private void recoverVariables() {
-        objects = (MainEntity.Objects) getArguments().getSerializable(ARG_OBJECTS);
+        objects = (MainEntity.Objects) getArguments().getSerializable(MAIN_ENTITY);
 
     }
 

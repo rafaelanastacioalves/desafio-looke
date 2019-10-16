@@ -29,8 +29,6 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjection;
 import timber.log.Timber;
 
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
 public class MainActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final RecyclerViewClickListener mClickListener = this;
     private ProgressBar progressBar;
@@ -41,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
     @Inject
     MainEntityListingViewModelFactory projectViewModelFactory;
+    private MainEntity mainEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
                             Timber.d("Success");
                             hideLoading();
                             showMainView();
+                            mainEntity = mainEntityResource.data;
                             populateRecyclerView(mainEntityResource.data.getObjects());
                             break;
 
@@ -160,17 +160,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewClick
 
 
     public void onClick(View view, int position) {
-        MainEntity.Objects objects = (com.example.rafaelanastacioalves.moby.domain.entities.MainEntity.Objects) mTripPackageListAdapter.getItems().get(position);
 
         AppCompatImageView transitionImageView = view.findViewById(R.id.main_entity_imageview);
-        startActivityByVersion(objects, transitionImageView);
+        startActivityByVersion(mainEntity, position);
 
 
     }
-
-    private void startActivityByVersion(MainEntity.Objects objects, AppCompatImageView transitionImageView) {
+    private void startActivityByVersion(MainEntity mainEntity, int position) {
         Intent i = new Intent(this, EntityDetailActivity.class);
-        i.putExtra(EntityDetailsFragment.ARG_OBJECTS, objects);
+        i.putExtra(EntityDetailsFragment.MAIN_ENTITY, mainEntity);
+        i.putExtra(EntityDetailsFragment.ARG_POSITION, position);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bundle bundle = null;
