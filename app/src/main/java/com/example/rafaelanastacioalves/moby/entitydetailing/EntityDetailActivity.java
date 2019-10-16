@@ -48,7 +48,20 @@ public class EntityDetailActivity extends AppCompatActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             checkPermission();
+        }else {
+            showFragmentForListPosition(position);
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        recoverVariablesFromPreviousState(savedInstanceState);
+    }
+
+    private void recoverVariablesFromPreviousState(Bundle savedInstanceState) {
+        position = savedInstanceState.getInt(EntityDetailsFragment.ARG_POSITION);
+        mainEntity = (MainEntity) savedInstanceState.getSerializable(EntityDetailsFragment.MAIN_ENTITY);
     }
 
     private void setupListeners() {
@@ -56,9 +69,18 @@ public class EntityDetailActivity extends AppCompatActivity {
         previousButton.setOnClickListener(v -> onClickPrevious() );
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showFragmentForListPosition(position);
+
+    }
+
     private void recoverVariables() {
-        this.position = getIntent().getIntExtra(EntityDetailsFragment.ARG_POSITION, 0);
-        this.mainEntity = (MainEntity) getIntent().getSerializableExtra(EntityDetailsFragment.MAIN_ENTITY);
+            this.position = getIntent().getIntExtra(EntityDetailsFragment.ARG_POSITION, 0);
+            this.mainEntity = (MainEntity) getIntent().getSerializableExtra(EntityDetailsFragment.MAIN_ENTITY);
+
+
     }
 
     private void showFragmentForListPosition(int position) {
@@ -114,4 +136,10 @@ public class EntityDetailActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(EntityDetailsFragment.MAIN_ENTITY, mainEntity);
+        outState.putInt(EntityDetailsFragment.ARG_POSITION, position);
+    }
 }
