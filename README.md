@@ -1,29 +1,39 @@
-# TEMPLATE BELOW
-
-# TITULO
+# Desafio Looke
 
 ## Descrição Geral
 
-Descrição geral *******.
+Tela A, carregar um json dinamicamente a partir da URL ***, fazer o parse e criar uma interface (lista) com os objetos disponíveis no json. Na lista deve ser mostrado o nome e a imagem do objeto.
 
-![tela de listagem](captures/)
+![tela de listagem](captures/Screenshot_1523145822.png)
 
-![tela de detalhes](captures/)
+![tela de detalhes](captures/Screenshot_1571330979.png)
+
+## Arquitetura
+
+Utilizei MVVM, com dois repositórios. Um deles, utiliza o conceito de "Single Source of Truth" para
+fazer cache das medias. Todas as requisições HTTP, bem como salvamento em disco, são assíncronos. 
 
 ## Descrição técnica
 
 Utilizei as seguintes bibliotecas:
-- ***: : 
 
-- ***: : 
+- Retrofit: Para consultas http 
 
-- ***: : 
+- RxAndroid: Utilizei `Observable` e `Emitter` para realizar a consulta http e para salvar em disco
+as medias, respeitando o conceito de "Single Source of Truth".
 
-- ***: : 
+- Exoplayer: Para reprodução de media (audio e vídeo). 
 
-- ***: : 
+- Dagger: Para injeção de dependências.
+
+## Quebra das tarefas
+
+(Link para o Trello)[https://trello.com/b/Nzneu2Lg/desafio-looke]
 
 
-## Testes
+## Atividades não realizadas
 
-Os testes utilizam o buildtype ```instrumentation``` para rodar, pois forçamos que o app seja buildado para apontar para localhost durante os testes.
+- Melhoria de UI;
+
+- Adicionar testes (só tem um unitário).
+
