@@ -4,9 +4,9 @@
 
 Tela A, carregar um json dinamicamente a partir da URL ***, fazer o parse e criar uma interface (lista) com os objetos disponíveis no json. Na lista deve ser mostrado o nome e a imagem do objeto.
 
-![tela de listagem](captures/Screenshot_1523145822.png)
+<img src="captures/Screenshot_1523145822.png" width="200">    
+<img src="captures/Screenshot_1571330979.png" width="200">    
 
-![tela de detalhes](captures/Screenshot_1571330979.png)
 
 ## Arquitetura
 
