@@ -78,7 +78,7 @@ public abstract class NetworkBoundResource<ResultType, RequestType> {
 
     protected abstract Call<ResultType> createCall();
 
-    public LiveData<Resource<ResultType>> asLiveData() {
+    public MutableLiveData<Resource<ResultType>> asLiveData() {
         return result;
     }
 

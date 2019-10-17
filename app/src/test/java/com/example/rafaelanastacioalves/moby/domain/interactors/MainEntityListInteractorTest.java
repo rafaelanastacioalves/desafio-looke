@@ -1,6 +1,7 @@
 package com.example.rafaelanastacioalves.moby.domain.interactors;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 
 import com.example.rafaelanastacioalves.moby.domain.entities.MainEntity;
 import com.example.rafaelanastacioalves.moby.domain.entities.Resource;
@@ -41,16 +42,16 @@ public class MainEntityListInteractorTest {
     @Test
     public void shouldReturnLiveDataAfterExecute(){
         MainEntityListInteractor interactor = new MainEntityListInteractor(appRepository);
-        MainEntityListInteractor.RequestValues resquestValue = null;
+        MainEntityListInteractor.RequestValues resquestValue = new MainEntityListInteractor.RequestValues();
 
         when(appRepository.getMainEntityList()).thenReturn(
-                new LiveData<Resource<List<MainEntity>>>() {
+                new MutableLiveData<Resource<MainEntity>>() {
 
                 }
         );
 
         Object returnedObject = interactor.execute(resquestValue);
-        Assert.assertThat(returnedObject, instanceOf(LiveData.class));
+        Assert.assertThat(returnedObject, instanceOf(MutableLiveData.class));
     }
 
 
