@@ -28,7 +28,7 @@ as medias, respeitando o conceito de "Single Source of Truth".
 
 ## Quebra das tarefas
 
-(Link para o Trello)[https://trello.com/b/Nzneu2Lg/desafio-looke]
+[Link para o Trello](https://trello.com/b/Nzneu2Lg/desafio-looke)
 
 
 ## Atividades não realizadas
